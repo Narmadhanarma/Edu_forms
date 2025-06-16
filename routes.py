@@ -2,7 +2,7 @@ import os
 import secrets
 from flask import render_template, redirect, url_for, flash, request, jsonify, send_file, abort
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.urls import url_parse
+from urllib.parse import urlparse
 from datetime import datetime
 import logging
 
@@ -82,7 +82,7 @@ def login():
                            organization.id, request.remote_addr, request.user_agent.string)
             
             next_page = request.args.get('next')
-            if not next_page or url_parse(next_page).netloc != '':
+            if not next_page or urlparse(next_page).netloc != '':
                 next_page = url_for('dashboard')
             return redirect(next_page)
         else:
