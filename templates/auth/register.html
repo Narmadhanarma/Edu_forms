@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Register - EduForm Generator{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Register Your Organization
+                    </h3>
+                    <p class="mb-0 mt-2 opacity-75">Join the platform and start creating forms</p>
+                </div>
+                
+                <div class="card-body p-5">
+                    <form method="POST" action="{{ url_for('register') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <!-- Organization Name -->
+                            <div class="col-12 mb-4">
+                                {{ form.name.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-university text-muted"></i>
+                                    </span>
+                                    {{ form.name(class="form-control form-control-lg", placeholder="Enter organization name") }}
+                                </div>
+                                {% if form.name.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6 mb-4">
+                                {{ form.email.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope text-muted"></i>
+                                    </span>
+                                    {{ form.email(class="form-control form-control-lg", placeholder="organization@domain.com") }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.email.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Organization Type -->
+                            <div class="col-md-6 mb-4">
+                                {{ form.organization_type.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-building text-muted"></i>
+                                    </span>
+                                    {{ form.organization_type(class="form-select form-select-lg") }}
+                                </div>
+                                {% if form.organization_type.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.organization_type.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="col-md-6 mb-4">
+                                {{ form.phone.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-phone text-muted"></i>
+                                    </span>
+                                    {{ form.phone(class="form-control form-control-lg", placeholder="+1 (555) 123-4567") }}
+                                </div>
+                                {% if form.phone.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.phone.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- WhatsApp Number -->
+                            <div class="col-md-6 mb-4">
+                                {{ form.whatsapp_number.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fab fa-whatsapp text-success"></i>
+                                    </span>
+                                    {{ form.whatsapp_number(class="form-control form-control-lg", placeholder="+1 (555) 123-4567") }}
+                                </div>
+                                {% if form.whatsapp_number.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.whatsapp_number.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">Used for WhatsApp group management</small>
+                            </div>
+                            
+                            <!-- Address -->
+                            <div class="col-12 mb-4">
+                                {{ form.address.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text align-self-start">
+                                        <i class="fas fa-map-marker-alt text-muted"></i>
+                                    </span>
+                                    {{ form.address(class="form-control", rows="3", placeholder="Enter complete address") }}
+                                </div>
+                                {% if form.address.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.address.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="col-md-6 mb-4">
+                                {{ form.password.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    {{ form.password(class="form-control form-control-lg", placeholder="Enter secure password") }}
+                                </div>
+                                {% if form.password.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">Minimum 6 characters</small>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="col-md-6 mb-4">
+                                {{ form.confirm_password.label(class="form-label fw-semibold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    {{ form.confirm_password(class="form-control form-control-lg", placeholder="Confirm password") }}
+                                </div>
+                                {% if form.confirm_password.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.confirm_password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-success btn-lg") }}
+                        </div>
+                    </form>
+                    
+                    <!-- Additional Links -->
+                    <div class="text-center mt-4">
+                        <hr class="my-4">
+                        <p class="mb-0">
+                            Already have an account? 
+                            <a href="{{ url_for('login') }}" class="text-decoration-none fw-semibold">
+                                Sign in here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Information Notice -->
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <i class="fas fa-shield-alt text-success fa-2x mb-2"></i>
+                            <h6>Secure & Private</h6>
+                            <small class="text-muted">Your data is encrypted and protected</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-clock text-primary fa-2x mb-2"></i>
+                            <h6>Instant Setup</h6>
+                            <small class="text-muted">Start creating forms immediately</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-headset text-info fa-2x mb-2"></i>
+                            <h6>24/7 Support</h6>
+                            <small class="text-muted">We're here to help you succeed</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Auto-focus on first input
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.getElementById('name');
+        if (nameInput) {
+            nameInput.focus();
+        }
+        
+        // Password strength indicator
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        
+        if (passwordInput && confirmPasswordInput) {
+            function checkPasswordMatch() {
+                if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordInput.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPasswordInput.setCustomValidity('');
+                }
+            }
+            
+            passwordInput.addEventListener('input', checkPasswordMatch);
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+        }
+    });
+</script>
+{% endblock %}

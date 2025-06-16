@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied - EduForm Generator{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 text-center">
+            <div class="error-page">
+                <div class="error-number">
+                    <h1 class="display-1 fw-bold text-warning">403</h1>
+                </div>
+                
+                <div class="error-message mb-4">
+                    <h2 class="h3 mb-3">Access Denied</h2>
+                    <p class="text-muted">
+                        You don't have permission to access this resource. 
+                        This could be due to insufficient privileges or authentication issues.
+                    </p>
+                </div>
+                
+                <div class="error-illustration mb-4">
+                    <i class="fas fa-lock fa-4x text-muted opacity-50"></i>
+                </div>
+                
+                <div class="error-actions">
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Access Information -->
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                Why am I seeing this?
+                            </h6>
+                            <ul class="list-unstyled text-muted text-start">
+                                {% if not current_user.is_authenticated %}
+                                <li class="mb-2">
+                                    <i class="fas fa-user-slash text-warning me-2"></i>
+                                    You are not logged in to the system
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-key text-primary me-2"></i>
+                                    This resource requires authentication
+                                </li>
+                                {% else %}
+                                <li class="mb-2">
+                                    <i class="fas fa-shield-alt text-danger me-2"></i>
+                                    Your account doesn't have permission for this action
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-user-check text-warning me-2"></i>
+                                    You may need different access levels
+                                </li>
+                                {% endif %}
+                                <li class="mb-0">
+                                    <i class="fas fa-link text-info me-2"></i>
+                                    The link you followed may be incorrect or expired
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- What to do -->
+                <div class="mt-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="text-muted">
+                                <i class="fas fa-question-circle me-2"></i>
+                                What should I do?
+                            </h6>
+                            <div class="row text-start">
+                                {% if not current_user.is_authenticated %}
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <h6 class="text-primary">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                                        </h6>
+                                        <p class="text-muted small mb-0">
+                                            Sign in with your organization account to access your dashboard and forms.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <h6 class="text-success">
+                                            <i class="fas fa-user-plus me-2"></i>Register
+                                        </h6>
+                                        <p class="text-muted small mb-0">
+                                            Don't have an account? Register your educational organization to get started.
+                                        </p>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <h6 class="text-primary">
+                                            <i class="fas fa-home me-2"></i>Go Home
+                                        </h6>
+                                        <p class="text-muted small mb-0">
+                                            Return to your dashboard to access your authorized resources.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <h6 class="text-info">
+                                            <i class="fas fa-headset me-2"></i>Contact Support
+                                        </h6>
+                                        <p class="text-muted small mb-0">
+                                            If you believe this is an error, please contact support for assistance.
+                                        </p>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Status -->
+                {% if current_user.is_authenticated %}
+                <div class="mt-4">
+                    <div class="card border-info">
+                        <div class="card-body">
+                            <h6 class="text-info">
+                                <i class="fas fa-user me-2"></i>
+                                Current Session
+                            </h6>
+                            <p class="text-muted mb-0">
+                                Logged in as: <strong>{{ current_user.name }}</strong>
+                                <br>
+                                Email: <strong>{{ current_user.email }}</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .error-page {
+        padding: 2rem 0;
+    }
+    
+    .error-number h1 {
+        font-size: 8rem;
+        line-height: 1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .error-illustration {
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .border-info {
+        border-color: #0dcaf0 !important;
+    }
+    
+    @media (max-width: 768px) {
+        .error-number h1 {
+            font-size: 6rem;
+        }
+    }
+</style>
+{% endblock %}

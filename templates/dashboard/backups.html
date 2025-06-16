@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Backup Management - EduForm Generator{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Backups</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">
+                        <i class="fas fa-archive text-primary me-2"></i>
+                        Backup Management
+                    </h1>
+                    <p class="text-muted mb-0">Manage form backups and restore deleted forms</p>
+                </div>
+                <div>
+                    <form method="POST" action="{{ url_for('create_manual_backup') }}" class="d-inline">
+                        <button type="submit" class="btn btn-primary" 
+                                onclick="return confirm('Create backup of all your forms? This may take a moment.')">
+                            <i class="fas fa-plus me-1"></i>Create Manual Backup
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Information -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5 class="alert-heading">
+                    <i class="fas fa-info-circle me-2"></i>About Backups
+                </h5>
+                <p class="mb-2">
+                    <strong>Automatic Backups:</strong> Created automatically when you delete a form to prevent data loss.
+                </p>
+                <p class="mb-0">
+                    <strong>Manual Backups:</strong> Created on-demand to save the current state of all your forms.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backups List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Available Backups
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if backups %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Form Title</th>
+                                        <th>Backup Type</th>
+                                        <th>Created Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for backup in backups %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <div class="fw-semibold">
+                                                        {{ backup.form_title or 'Untitled Form' }}
+                                                    </div>
+                                                    {% if backup.original_form_id %}
+                                                        <small class="text-muted">
+                                                            Original Form ID: {{ backup.original_form_id }}
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if backup.backup_type == 'auto' %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-magic me-1"></i>Automatic
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-primary">
+                                                    <i class="fas fa-user me-1"></i>Manual
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{ backup.created_at.strftime('%b %d, %Y') if backup.created_at else 'N/A' }}
+                                            </div>
+                                            <small class="text-muted">
+                                                {{ backup.created_at.strftime('%I:%M %p') if backup.created_at else '' }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <!-- Restore Button -->
+                                                <form method="POST" action="{{ url_for('restore_backup', backup_id=backup.id) }}" class="d-inline">
+                                                    <button type="submit" class="btn btn-outline-success" 
+                                                            onclick="return confirm('Restore this backup? This will create a new form with the backed up data.')"
+                                                            title="Restore Form">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                <!-- Download Button -->
+                                                <a href="{{ url_for('download_backup', backup_id=backup.id) }}" 
+                                                   class="btn btn-outline-primary" title="Download Backup">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                                
+                                                <!-- Details Button -->
+                                                <button class="btn btn-outline-info" 
+                                                        onclick="showBackupDetails({{ backup.id }})"
+                                                        title="View Details">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Backups Available</h5>
+                            <p class="text-muted">
+                                Backups will appear here when you delete forms or create manual backups.
+                            </p>
+                            <form method="POST" action="{{ url_for('create_manual_backup') }}" class="d-inline">
+                                <button type="submit" class="btn btn-primary" 
+                                        onclick="return confirm('Create backup of all your forms?')">
+                                    <i class="fas fa-archive me-1"></i>Create Your First Backup
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Statistics -->
+    {% if backups %}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-chart-bar me-2"></i>Backup Statistics
+                    </h6>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="h4 text-primary">{{ backups|selectattr('backup_type', 'equalto', 'auto')|list|length }}</div>
+                            <small class="text-muted">Automatic</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h4 text-success">{{ backups|selectattr('backup_type', 'equalto', 'manual')|list|length }}</div>
+                            <small class="text-muted">Manual</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h4 text-info">{{ backups|length }}</div>
+                            <small class="text-muted">Total</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-info-circle me-2"></i>Backup Tips
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-1">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Backups are created automatically when deleting forms</small>
+                        </li>
+                        <li class="mb-1">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Manual backups save all your forms at once</small>
+                        </li>
+                        <li class="mb-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Restored forms get a new unique link</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Backup Details Modal -->
+<div class="modal fade" id="backupDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2"></i>Backup Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="backupDetailsContent">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function showBackupDetails(backupId) {
+        const modal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
+        const content = document.getElementById('backupDetailsContent');
+        
+        // Show loading state
+        content.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `;
+        
+        modal.show();
+        
+        // Simulate loading backup details (in a real app, this would be an API call)
+        setTimeout(() => {
+            content.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> This backup contains form configuration and all submission data.
+                </div>
+                <dl class="row">
+                    <dt class="col-sm-3">Backup ID:</dt>
+                    <dd class="col-sm-9">${backupId}</dd>
+                    <dt class="col-sm-3">Status:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-success">
+                            <i class="fas fa-check me-1"></i>Ready to Restore
+                        </span>
+                    </dd>
+                    <dt class="col-sm-3">Contains:</dt>
+                    <dd class="col-sm-9">
+                        <ul class="list-unstyled mb-0">
+                            <li><i class="fas fa-check text-success me-2"></i>Form configuration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Custom fields</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Submission data</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Timestamps</li>
+                        </ul>
+                    </dd>
+                </dl>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Restore Note:</strong> Restoring will create a new form with a new link. The original form link will not be restored.
+                </div>
+            `;
+        }, 1000);
+    }
+
+    // Add confirmation dialogs
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add tooltips to buttons
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+        const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

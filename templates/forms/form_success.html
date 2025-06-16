@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Submission Successful - {{ form.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Success Message -->
+            <div class="card border-success">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <div class="success-icon mb-3">
+                        <i class="fas fa-check-circle fa-4x"></i>
+                    </div>
+                    <h2 class="mb-0">Submission Successful!</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h4 class="text-success mb-3">Thank you, {{ submission.name }}!</h4>
+                        <p class="lead">Your submission for <strong>{{ form.title }}</strong> has been received successfully.</p>
+                    </div>
+                    
+                    <!-- Submission Details -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-info-circle text-primary me-2"></i>
+                                        Submission Details
+                                    </h6>
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Name:</dt>
+                                        <dd class="col-sm-8">{{ submission.name }}</dd>
+                                        
+                                        <dt class="col-sm-4">Email:</dt>
+                                        <dd class="col-sm-8">{{ submission.email }}</dd>
+                                        
+                                        <dt class="col-sm-4">Phone:</dt>
+                                        <dd class="col-sm-8">{{ submission.whatsapp_number }}</dd>
+                                        
+                                        <dt class="col-sm-4">Submitted:</dt>
+                                        <dd class="col-sm-8">{{ submission.submitted_at.strftime('%b %d, %Y at %I:%M %p') if submission.submitted_at else 'Just now' }}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-bell text-info me-2"></i>
+                                        What Happens Next?
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <i class="fas fa-envelope text-primary me-2"></i>
+                                            <small>Confirmation email sent to your inbox</small>
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fab fa-whatsapp text-success me-2"></i>
+                                            <small>WhatsApp group invite (if applicable)</small>
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-users text-info me-2"></i>
+                                            <small>Updates from {{ form.organization.name }}</small>
+                                        </li>
+                                        <li class="mb-0">
+                                            <i class="fas fa-shield-alt text-success me-2"></i>
+                                            <small>Your data is secure and confidential</small>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Organization Info -->
+                    <div class="card mt-4">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-2">Organized by</h6>
+                            <h5 class="text-primary mb-1">{{ form.organization.name }}</h5>
+                            {% if form.organization.organization_type %}
+                                <small class="text-muted">{{ form.organization.organization_type.title() }}</small>
+                            {% endif %}
+                            {% if form.organization.email %}
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-envelope me-1"></i>
+                                        {{ form.organization.email }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary" onclick="window.print()">
+                                <i class="fas fa-print me-1"></i>Print Confirmation
+                            </button>
+                            <button class="btn btn-outline-success" onclick="shareSubmission()">
+                                <i class="fas fa-share me-1"></i>Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-question-circle fa-2x text-info mb-3"></i>
+                            <h6>Need Help?</h6>
+                            <p class="text-muted small mb-0">
+                                If you have any questions about your submission, please contact the organization directly.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-edit fa-2x text-warning mb-3"></i>
+                            <h6>Need to Update?</h6>
+                            <p class="text-muted small mb-0">
+                                Contact {{ form.organization.name }} if you need to make changes to your submission.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reference Number -->
+            <div class="text-center mt-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted">
+                            <strong>Reference Number:</strong> {{ form.id }}-{{ submission.id }}
+                            <br>
+                            <strong>Form ID:</strong> {{ form.unique_link }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Auto-redirect after 30 seconds (optional)
+    let countdown = 30;
+    function startCountdown() {
+        if (countdown > 0) {
+            setTimeout(() => {
+                countdown--;
+                startCountdown();
+            }, 1000);
+        }
+    }
+    
+    // Share functionality
+    function shareSubmission() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Form Submission Successful',
+                text: `I successfully submitted the form: {{ form.title }}`,
+                url: window.location.href
+            }).catch(console.error);
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            const text = `I successfully submitted the form: {{ form.title }}`;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Submission details copied to clipboard!', 'success');
+                });
+            } else {
+                alert('Sharing not supported on this browser');
+            }
+        }
+    }
+    
+    // Show toast notification
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 1050;';
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check me-2"></i>${message}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', function() {
+            document.body.removeChild(toast);
+        });
+    }
+    
+    // Add some celebration animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const successIcon = document.querySelector('.success-icon i');
+        if (successIcon) {
+            successIcon.style.animation = 'bounce 1s ease-in-out';
+        }
+    });
+</script>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
+    }
+    
+    .success-icon {
+        animation: bounce 1s ease-in-out;
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .border-success {
+        border-color: #198754 !important;
+        border-width: 2px !important;
+    }
+    
+    @media print {
+        .btn-group {
+            display: none !important;
+        }
+        
+        .card {
+            border: 1px solid #000 !important;
+            box-shadow: none !important;
+        }
+    }
+</style>
+{% endblock %}

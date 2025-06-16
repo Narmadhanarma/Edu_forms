@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - EduForm Generator{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 text-center">
+            <div class="error-page">
+                <div class="error-number">
+                    <h1 class="display-1 fw-bold text-danger">500</h1>
+                </div>
+                
+                <div class="error-message mb-4">
+                    <h2 class="h3 mb-3">Internal Server Error</h2>
+                    <p class="text-muted">
+                        Oops! Something went wrong on our end. We're working to fix this issue. 
+                        Please try again in a few moments.
+                    </p>
+                </div>
+                
+                <div class="error-illustration mb-4">
+                    <i class="fas fa-tools fa-4x text-muted opacity-50"></i>
+                </div>
+                
+                <div class="error-actions">
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <button class="btn btn-primary" onclick="window.location.reload()">
+                            <i class="fas fa-sync me-2"></i>Try Again
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Go Home
+                        </a>
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Error Details -->
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                What happened?
+                            </h6>
+                            <p class="card-text text-muted">
+                                The server encountered an unexpected condition that prevented it from 
+                                fulfilling your request. This is usually a temporary issue.
+                            </p>
+                            
+                            <h6 class="card-title mt-3">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                What can you do?
+                            </h6>
+                            <ul class="list-unstyled text-muted">
+                                <li><i class="fas fa-check text-success me-2"></i>Refresh the page and try again</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Wait a few minutes and retry</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Check if the issue persists</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Contact support if the problem continues</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Support -->
+                <div class="mt-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="text-muted">
+                                <i class="fas fa-headset me-2"></i>
+                                Need immediate help?
+                            </h6>
+                            <p class="text-muted mb-0">
+                                If this error persists, please contact our support team with the error details.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Error Reference -->
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        Error occurred at: {{ moment().format('MMMM Do YYYY, h:mm:ss a') if moment else 'Unknown time' }}
+                        <br>
+                        <i class="fas fa-hashtag me-1"></i>
+                        Reference: ERR-{{ range(1000, 9999) | random }}-{{ moment().format('YYYYMMDD') if moment else '00000000' }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .error-page {
+        padding: 2rem 0;
+    }
+    
+    .error-number h1 {
+        font-size: 8rem;
+        line-height: 1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .error-illustration {
+        animation: shake 2s ease-in-out infinite;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    @media (max-width: 768px) {
+        .error-number h1 {
+            font-size: 6rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Auto-retry after 5 seconds
+    setTimeout(function() {
+        const retryBtn = document.querySelector('.btn-primary');
+        if (retryBtn) {
+            retryBtn.innerHTML = '<i class="fas fa-sync fa-spin me-2"></i>Auto-retrying...';
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+    }, 5000);
+</script>
+{% endblock %}

@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form.title }} - Submit Form{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Form Header -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="mb-2">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        {{ form.title }}
+                    </h2>
+                    {% if form.description %}
+                        <p class="mb-0 lead">{{ form.description }}</p>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="text-primary mb-2">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                            <h6>{{ form.submission_count }} / {{ form.max_submissions }}</h6>
+                            <small class="text-muted">Submissions</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-success mb-2">
+                                <i class="fas fa-shield-alt fa-2x"></i>
+                            </div>
+                            <h6>Secure</h6>
+                            <small class="text-muted">& Confidential</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-info mb-2">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                            <h6>2-3 Minutes</h6>
+                            <small class="text-muted">Quick Submit</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submission Form -->
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('process_form_submission', unique_link=form.unique_link) }}" id="submissionForm">
+                        <div class="mb-4">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Required fields are marked with an asterisk (*)</strong>
+                            </div>
+                        </div>
+
+                        {% for field in form.get_form_fields() %}
+                        <div class="mb-4">
+                            <label for="{{ field.name }}" class="form-label fw-semibold">
+                                {{ field.label }}
+                                {% if field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            
+                            {% if field.type == 'textarea' %}
+                                <textarea class="form-control form-control-lg" 
+                                          id="{{ field.name }}" 
+                                          name="{{ field.name }}" 
+                                          rows="4" 
+                                          placeholder="Enter {{ field.label.lower() }}"
+                                          {% if field.required %}required{% endif %}></textarea>
+                            
+                            {% elif field.type == 'select' %}
+                                <select class="form-select form-select-lg" 
+                                        id="{{ field.name }}" 
+                                        name="{{ field.name }}"
+                                        {% if field.required %}required{% endif %}>
+                                    <option value="">Choose {{ field.label.lower() }}</option>
+                                    {% for option in field.get('options', []) %}
+                                    <option value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            
+                            {% elif field.type == 'checkbox' %}
+                                <div class="form-check">
+                                    <input type="checkbox" 
+                                           class="form-check-input" 
+                                           id="{{ field.name }}" 
+                                           name="{{ field.name }}" 
+                                           value="yes"
+                                           {% if field.required %}required{% endif %}>
+                                    <label class="form-check-label" for="{{ field.name }}">
+                                        {{ field.label }}
+                                    </label>
+                                </div>
+                            
+                            {% elif field.type == 'number' %}
+                                <input type="number" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ field.name }}" 
+                                       name="{{ field.name }}" 
+                                       placeholder="Enter {{ field.label.lower() }}"
+                                       {% if field.required %}required{% endif %}>
+                            
+                            {% elif field.type == 'date' %}
+                                <input type="date" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ field.name }}" 
+                                       name="{{ field.name }}"
+                                       {% if field.required %}required{% endif %}>
+                            
+                            {% elif field.type == 'tel' %}
+                                <input type="tel" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ field.name }}" 
+                                       name="{{ field.name }}" 
+                                       placeholder="Enter {{ field.label.lower() }}"
+                                       {% if field.required %}required{% endif %}>
+                            
+                            {% elif field.type == 'url' %}
+                                <input type="url" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ field.name }}" 
+                                       name="{{ field.name }}" 
+                                       placeholder="https://example.com"
+                                       {% if field.required %}required{% endif %}>
+                            
+                            {% elif field.type == 'email' %}
+                                <input type="email" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ field.name }}" 
+                                       name="{{ field.name }}" 
+                                       placeholder="Enter {{ field.label.lower() }}"
+                                       {% if field.required %}required{% endif %}>
+                            
+                            {% else %}
+                                <input type="text" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ field.name }}" 
+                                       name="{{ field.name }}" 
+                                       placeholder="Enter {{ field.label.lower() }}"
+                                       {% if field.required %}required{% endif %}>
+                            {% endif %}
+                            
+                            {% if field.get('help_text') %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- Privacy Notice -->
+                        <div class="mb-4">
+                            <div class="alert alert-light border">
+                                <h6><i class="fas fa-shield-alt text-success me-2"></i>Privacy & Security</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li><i class="fas fa-check text-success me-2"></i>Your information is encrypted and secure</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Data is used only for educational purposes</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>You'll receive a confirmation email</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>WhatsApp group invite will be sent (if applicable)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Submit Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Organization Info -->
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Organized by</h6>
+                    <h5 class="text-primary">{{ form.organization.name }}</h5>
+                    {% if form.organization.organization_type %}
+                        <small class="text-muted">{{ form.organization.organization_type.title() }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('submissionForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        // Form validation
+        form.addEventListener('submit', function(e) {
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            submitBtn.disabled = true;
+            
+            // Validate required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            // Email validation
+            const emailFields = form.querySelectorAll('input[type="email"]');
+            emailFields.forEach(field => {
+                if (field.value && !isValidEmail(field.value)) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                    
+                    // Show error message
+                    let errorDiv = field.nextElementSibling;
+                    if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        field.parentNode.appendChild(errorDiv);
+                    }
+                    errorDiv.textContent = 'Please enter a valid email address';
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            // Phone number validation
+            const phoneFields = form.querySelectorAll('input[type="tel"]');
+            phoneFields.forEach(field => {
+                if (field.value && !isValidPhone(field.value)) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                    
+                    // Show error message
+                    let errorDiv = field.nextElementSibling;
+                    if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        field.parentNode.appendChild(errorDiv);
+                    }
+                    errorDiv.textContent = 'Please enter a valid phone number';
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Form';
+                submitBtn.disabled = false;
+                
+                // Scroll to first error
+                const firstError = form.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        // Real-time validation
+        form.addEventListener('input', function(e) {
+            if (e.target.classList.contains('is-invalid')) {
+                e.target.classList.remove('is-invalid');
+                
+                // Remove error message
+                const errorDiv = e.target.nextElementSibling;
+                if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                    errorDiv.remove();
+                }
+            }
+        });
+        
+        // Auto-format phone numbers
+        const phoneInputs = form.querySelectorAll('input[type="tel"]');
+        phoneInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 10) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                }
+                e.target.value = value;
+            });
+        });
+    });
+    
+    // Validation helper functions
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    function isValidPhone(phone) {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        const digitsOnly = phone.replace(/\D/g, '');
+        return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+    }
+</script>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-control-lg, .form-select-lg {
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-check-input {
+        transform: scale(1.2);
+    }
+    
+    .is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #dc3545;
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .alert {
+        border-left: 4px solid;
+    }
+    
+    .alert-info {
+        border-left-color: #0dcaf0;
+    }
+    
+    .alert-light {
+        border-left-color: #6c757d;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - EduForm Generator{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">
+                        <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                        Dashboard
+                    </h1>
+                    <p class="text-muted mb-0">Welcome back, {{ current_user.name }}!</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('create_manual_backup') }}" class="btn btn-outline-secondary me-2" 
+                       onclick="return confirm('Create backup of all forms?')">
+                        <i class="fas fa-archive me-1"></i>Backup Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold">{{ total_forms }}</h3>
+                            <p class="mb-0">Total Forms</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clipboard-list fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold">{{ active_forms }}</h3>
+                            <p class="mb-0">Active Forms</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold">{{ total_submissions }}</h3>
+                            <p class="mb-0">Total Submissions</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-paper-plane fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold">{{ forms|length - active_forms }}</h3>
+                            <p class="mb-0">Inactive Forms</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-pause-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Templates Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-circle text-primary me-2"></i>
+                        Create New Form
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Choose from our pre-built templates to get started quickly:</p>
+                    
+                    <div class="row g-3">
+                        {% for template_id, template in templates.items() %}
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <div class="template-card h-100">
+                                <div class="card border-0 shadow-sm h-100 template-hover">
+                                    <div class="card-body text-center p-3">
+                                        <div class="template-icon mb-3">
+                                            <i class="fas fa-{{ template.icon }} fa-3x text-primary"></i>
+                                        </div>
+                                        <h6 class="card-title">{{ template.title }}</h6>
+                                        <p class="card-text small text-muted">{{ template.description }}</p>
+                                        <a href="{{ url_for('form_builder', template_type=template_id) }}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit me-1"></i>Create
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Forms Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        Recent Forms
+                    </h5>
+                    <a href="{{ url_for('form_management') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-list me-1"></i>View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if forms %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Form Title</th>
+                                        <th>Template</th>
+                                        <th>Status</th>
+                                        <th>Submissions</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for form in forms[:5] %}
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">{{ form.title }}</div>
+                                            {% if form.description %}
+                                                <small class="text-muted">{{ form.description[:50] }}{% if form.description|length > 50 %}...{% endif %}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                {{ form.template_type.title().replace('_', ' ') }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if form.is_active %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Active
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-pause-circle me-1"></i>Inactive
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2">{{ form.submission_count }}/{{ form.max_submissions }}</span>
+                                                <div class="progress" style="width: 60px; height: 6px;">
+                                                    <div class="progress-bar bg-info" 
+                                                         style="width: {{ (form.submission_count / form.max_submissions * 100) if form.max_submissions else 0 }}%">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ form.created_at.strftime('%b %d, %Y') if form.created_at else 'N/A' }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{{ url_for('form_preview', form_id=form.id) }}" 
+                                                   class="btn btn-outline-primary" title="Preview">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <button class="btn btn-outline-success" 
+                                                        onclick="copyFormLink('{{ url_for('submit_form', unique_link=form.unique_link, _external=True) }}')"
+                                                        title="Copy Link">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                                <a href="{{ url_for('export_form_excel', form_id=form.id) }}" 
+                                                   class="btn btn-outline-info" title="Export Excel">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No forms created yet</h5>
+                            <p class="text-muted">Get started by creating your first form using one of the templates above.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Copy form link functionality
+    function copyFormLink(url) {
+        navigator.clipboard.writeText(url).then(function() {
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed';
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 1050;';
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas fa-check me-2"></i>Form link copied to clipboard!
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            // Show toast
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', function() {
+                document.body.removeChild(toast);
+            });
+        }).catch(function() {
+            alert('Failed to copy link. Please try again.');
+        });
+    }
+
+    // Add hover effects to template cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const templateCards = document.querySelectorAll('.template-hover');
+        templateCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .template-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .template-hover:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    }
+    
+    .template-icon {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .progress {
+        border-radius: 3px;
+        background-color: #e9ecef;
+    }
+</style>
+{% endblock %}
