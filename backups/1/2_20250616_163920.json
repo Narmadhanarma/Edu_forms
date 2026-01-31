@@ -1,0 +1,61 @@
+{
+  "form": {
+    "title": "College ICM Registration (Restored)",
+    "description": "Registration for Inter-College Meet",
+    "template_type": "college_icm",
+    "form_fields": [
+      {
+        "name": "name",
+        "type": "text",
+        "label": "Full Name",
+        "required": true
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "label": "Email Address",
+        "required": true
+      },
+      {
+        "name": "whatsapp_number",
+        "type": "tel",
+        "label": "WhatsApp Number",
+        "required": true
+      },
+      {
+        "name": "team_individual",
+        "type": "select",
+        "label": "Team/Individual",
+        "required": true,
+        "options": [
+          "Team",
+          "Individual"
+        ]
+      },
+      {
+        "name": "position",
+        "type": "text",
+        "label": "Position/Role",
+        "required": false
+      }
+    ],
+    "max_submissions": 4,
+    "created_at": "2025-06-16T16:35:14.398809"
+  },
+  "submissions": [
+    {
+      "name": "M.Narmadhadevi",
+      "email": "devnarmadha43@gmail.com",
+      "whatsapp_number": "(741) 894-5303",
+      "form_data": {
+        "name": "M.Narmadhadevi",
+        "email": "devnarmadha43@gmail.com",
+        "whatsapp_number": "(741) 894-5303",
+        "team_individual": "Individual",
+        "position": "Lead"
+      },
+      "submitted_at": "2025-06-16T16:35:14.407165",
+      "ip_address": null
+    }
+  ]
+}

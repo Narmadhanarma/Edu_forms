@@ -1,0 +1,54 @@
+{
+  "form": {
+    "title": "New Student Admission",
+    "description": "Application form for new student admission",
+    "template_type": "student_admission",
+    "form_fields": [
+      {
+        "name": "name",
+        "type": "text",
+        "label": "Full Name",
+        "required": true
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "label": "Email Address",
+        "required": true
+      },
+      {
+        "name": "whatsapp_number",
+        "type": "tel",
+        "label": "WhatsApp Number",
+        "required": true
+      },
+      {
+        "name": "student_id",
+        "type": "text",
+        "label": "Student ID",
+        "required": false
+      },
+      {
+        "name": "date_of_birth",
+        "type": "date",
+        "label": "Date of Birth",
+        "required": true
+      },
+      {
+        "name": "address",
+        "type": "textarea",
+        "label": "Address",
+        "required": true
+      },
+      {
+        "name": "parent_name",
+        "type": "text",
+        "label": "Parent's Name",
+        "required": true
+      }
+    ],
+    "max_submissions": 40,
+    "created_at": "2025-06-16T16:52:40.312843"
+  },
+  "submissions": []
+}

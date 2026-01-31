@@ -1,0 +1,108 @@
+{
+  "form": {
+    "title": "MCA degree Admission",
+    "description": "MCA degree - Application form for new student admission",
+    "template_type": "student_admission",
+    "form_fields": [
+      {
+        "name": "name",
+        "type": "text",
+        "label": "Full Name",
+        "required": true
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "label": "Email Address",
+        "required": true
+      },
+      {
+        "name": "whatsapp_number",
+        "type": "tel",
+        "label": "WhatsApp Number",
+        "required": true
+      },
+      {
+        "name": "student_id",
+        "type": "text",
+        "label": "Student ID",
+        "required": false
+      },
+      {
+        "name": "date_of_birth",
+        "type": "date",
+        "label": "Date of Birth",
+        "required": true
+      },
+      {
+        "name": "address",
+        "type": "textarea",
+        "label": "Address",
+        "required": true
+      },
+      {
+        "name": "parent_name",
+        "type": "text",
+        "label": "Parent's Name",
+        "required": true
+      },
+      {
+        "name": "parent_phone",
+        "type": "tel",
+        "label": "Parent's Phone",
+        "required": true
+      },
+      {
+        "name": "qualifying_degree_eg_bsc_bca_btech",
+        "type": "select",
+        "label": "Qualifying Degree (e.g., B.Sc, BCA, B.Tech)",
+        "required": true,
+        "options": [
+          "BCA",
+          "B.Sc Cs",
+          "B.Tech"
+        ]
+      }
+    ],
+    "max_submissions": 60,
+    "created_at": "2025-10-14T12:25:06.166707"
+  },
+  "submissions": [
+    {
+      "name": "M.Narmadhadevi",
+      "email": "devimnarmadha@fcmdu.edu.in",
+      "whatsapp_number": "(091) 843-8059948",
+      "form_data": {
+        "name": "M.Narmadhadevi",
+        "email": "devimnarmadha@fcmdu.edu.in",
+        "whatsapp_number": "(091) 843-8059948",
+        "student_id": "2021BC25",
+        "date_of_birth": "2004-06-29",
+        "address": "Pothumbu, Madurai, Tamil Nadu 625018",
+        "parent_name": "M. Sivasangareswari",
+        "parent_phone": "(084) 380-59948",
+        "qualifying_degree_eg_bsc_bca_btech": "BCA"
+      },
+      "submitted_at": "2025-10-14T12:35:44.569943",
+      "ip_address": "127.0.0.1"
+    },
+    {
+      "name": "M.Narmadhadevi",
+      "email": "devimnarmadha@gmail.com",
+      "whatsapp_number": "(918) 438-059948",
+      "form_data": {
+        "name": "M.Narmadhadevi",
+        "email": "devimnarmadha@gmail.com",
+        "whatsapp_number": "(918) 438-059948",
+        "student_id": "2021BC25",
+        "date_of_birth": "2004-06-29",
+        "address": "Plot no. 1, Illango nagar, Karpaga vinagayar 2nd street, Pothumbu Main road, Madurai - 18.",
+        "parent_name": "M. Sivasangareswari",
+        "parent_phone": "(084) 380-59948",
+        "qualifying_degree_eg_bsc_bca_btech": "BCA"
+      },
+      "submitted_at": "2025-10-14T12:37:34.195742",
+      "ip_address": "127.0.0.1"
+    }
+  ]
+}
